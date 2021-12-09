@@ -1,0 +1,12 @@
+{
+  "name": "swagger-types",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "api": "openapi-generator-cli generate -i swagger/schema.json -g typescript-angular --skip-validate-spec"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.4.18"
+  }
+}

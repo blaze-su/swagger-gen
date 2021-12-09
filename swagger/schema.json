@@ -1,0 +1,773 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Инвестиционный отчёт",
+        "title": "ufr-invrep-core-api",
+        "contact": {
+            "name": "INVREP team"
+        },
+        "license": {}
+    },
+    "host": "ufrmsdev1",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "report-controller",
+            "description": "Report Controller"
+        }
+    ],
+    "paths": {
+        "/ufr-invrep-core-api/invest-doc": {
+            "post": {
+                "tags": [
+                    "report-controller"
+                ],
+                "summary": "investReportStep2",
+                "operationId": "investReportStep2UsingPOST",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "investReportDocRequest",
+                        "description": "investReportDocRequest",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InvestReportDocRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/InvestReportDocResponse"
+                        }
+                    },
+                    "201": {
+                        "description": "Created"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "deprecated": false
+            }
+        },
+        "/ufr-invrep-core-api/invest-report": {
+            "get": {
+                "tags": [
+                    "report-controller"
+                ],
+                "summary": "Получение данных инвестиционного отчета",
+                "operationId": "investReportStep1UsingGET",
+                "produces": [
+                    "*/*"
+                ],
+                "parameters": [
+                    {
+                        "name": "cus",
+                        "in": "query",
+                        "description": "Идентификатор клиента",
+                        "required": true,
+                        "type": "string",
+                        "allowEmptyValue": false
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "description": "Количество лет, за которое необходимо вернуть данные (не более трех)",
+                        "required": true,
+                        "type": "integer",
+                        "maximum": 3,
+                        "exclusiveMaximum": false,
+                        "minimum": 1,
+                        "exclusiveMinimum": false,
+                        "format": "int32",
+                        "allowEmptyValue": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/InvestReportDataResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                },
+                "deprecated": false
+            }
+        }
+    },
+    "definitions": {
+        "Currency": {
+            "type": "object",
+            "required": [
+                "balance",
+                "name",
+                "percent"
+            ],
+            "properties": {
+                "balance": {
+                    "type": "string",
+                    "description": "Баланс валюты"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование валюты"
+                },
+                "percent": {
+                    "type": "number",
+                    "description": "Процент валюты к остальным"
+                }
+            },
+            "title": "Currency"
+        },
+        "CurrencyExchangeRate": {
+            "type": "object",
+            "required": [
+                "dollarPrice",
+                "euroPrice",
+                "name",
+                "year"
+            ],
+            "properties": {
+                "dollarPrice": {
+                    "type": "number",
+                    "description": "Стоимость доллара на дату окончания за период"
+                },
+                "euroPrice": {
+                    "type": "number",
+                    "description": "Стоимость евро на дату окончания за период"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименования месяца или квартала"
+                },
+                "year": {
+                    "type": "string",
+                    "description": "Год"
+                }
+            },
+            "title": "CurrencyExchangeRate"
+        },
+        "Images": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "string"
+                },
+                "currencies": {
+                    "type": "string"
+                },
+                "shares": {
+                    "type": "string"
+                }
+            },
+            "title": "Images"
+        },
+        "InvestPortfolio": {
+            "type": "object",
+            "required": [
+                "balance",
+                "income",
+                "incomePercent",
+                "name",
+                "year"
+            ],
+            "properties": {
+                "balance": {
+                    "type": "string",
+                    "description": "Баланс клиента на дату окончания за период"
+                },
+                "income": {
+                    "type": "number",
+                    "description": "Доход портфеля на дату окончания за период"
+                },
+                "incomePercent": {
+                    "type": "number",
+                    "description": "Доходность портфеля в процентах на дату окончания за период"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименования месяца или квартала"
+                },
+                "operation": {
+                    "type": "string",
+                    "description": "Операции снятия/пополнения на дату окончания за период"
+                },
+                "year": {
+                    "type": "string",
+                    "description": "Год"
+                }
+            },
+            "title": "InvestPortfolio"
+        },
+        "InvestReportDataResponse": {
+            "type": "object",
+            "required": [
+                "currencies",
+                "currencyExchangeRates",
+                "investPortfolios",
+                "period",
+                "person",
+                "portfolio",
+                "shares"
+            ],
+            "properties": {
+                "currencies": {
+                    "type": "array",
+                    "description": "Валюты в портфеле",
+                    "items": {
+                        "$ref": "#/definitions/Currency"
+                    }
+                },
+                "currencyExchangeRates": {
+                    "type": "array",
+                    "description": "Стоимость валют",
+                    "items": {
+                        "$ref": "#/definitions/CurrencyExchangeRate"
+                    }
+                },
+                "investPortfolios": {
+                    "type": "array",
+                    "description": "Движения денежных средств клиента",
+                    "items": {
+                        "$ref": "#/definitions/InvestPortfolio"
+                    }
+                },
+                "paymentSchedulesTable": {
+                    "$ref": "#/definitions/PaymentSchedulesTable"
+                },
+                "paymentSchedulesTable1": {
+                    "$ref": "#/definitions/PaymentSchedulesTable1"
+                },
+                "paymentSchedulesTable2": {
+                    "$ref": "#/definitions/PaymentSchedulesTable2"
+                },
+                "paymentSchedulesTable3": {
+                    "$ref": "#/definitions/PaymentSchedulesTable3"
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                },
+                "person": {
+                    "description": "Клиент",
+                    "$ref": "#/definitions/Person"
+                },
+                "portfolio": {
+                    "description": "Портфель клиента",
+                    "$ref": "#/definitions/Portfolio"
+                },
+                "productExpirationDates": {
+                    "type": "array",
+                    "description": "Даты закрытия продуктов",
+                    "items": {
+                        "$ref": "#/definitions/ProductExpirationDate"
+                    }
+                },
+                "products": {
+                    "type": "array",
+                    "description": "Продукты клиента",
+                    "items": {
+                        "$ref": "#/definitions/Product"
+                    }
+                },
+                "shares": {
+                    "type": "array",
+                    "description": "Соотношения активов клиента",
+                    "items": {
+                        "$ref": "#/definitions/Share"
+                    }
+                }
+            },
+            "title": "InvestReportDataResponse",
+            "description": "Данные инвестиционного отчета"
+        },
+        "InvestReportDocRequest": {
+            "type": "object",
+            "required": [
+                "currencies",
+                "currencyExchangeRates",
+                "investPortfolios",
+                "period",
+                "person",
+                "portfolio",
+                "shares"
+            ],
+            "properties": {
+                "currencies": {
+                    "type": "array",
+                    "description": "Валюты в портфеле",
+                    "items": {
+                        "$ref": "#/definitions/Currency"
+                    }
+                },
+                "currencyExchangeRates": {
+                    "type": "array",
+                    "description": "Стоимость валют",
+                    "items": {
+                        "$ref": "#/definitions/CurrencyExchangeRate"
+                    }
+                },
+                "images": {
+                    "$ref": "#/definitions/Images"
+                },
+                "investPortfolios": {
+                    "type": "array",
+                    "description": "Движения денежных средств клиента",
+                    "items": {
+                        "$ref": "#/definitions/InvestPortfolio"
+                    }
+                },
+                "paymentSchedulesTable1": {
+                    "$ref": "#/definitions/PaymentSchedulesTable1"
+                },
+                "paymentSchedulesTable2": {
+                    "$ref": "#/definitions/PaymentSchedulesTable2"
+                },
+                "paymentSchedulesTable3": {
+                    "$ref": "#/definitions/PaymentSchedulesTable3"
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                },
+                "person": {
+                    "description": "Клиент",
+                    "$ref": "#/definitions/Person"
+                },
+                "portfolio": {
+                    "description": "Портфель клиента",
+                    "$ref": "#/definitions/Portfolio"
+                },
+                "productExpirationDates": {
+                    "type": "array",
+                    "description": "Даты закрытия продуктов",
+                    "items": {
+                        "$ref": "#/definitions/ProductExpirationDate"
+                    }
+                },
+                "products": {
+                    "type": "array",
+                    "description": "Продукты клиента",
+                    "items": {
+                        "$ref": "#/definitions/Product"
+                    }
+                },
+                "shares": {
+                    "type": "array",
+                    "description": "Соотношения активов клиента",
+                    "items": {
+                        "$ref": "#/definitions/Share"
+                    }
+                }
+            },
+            "title": "InvestReportDocRequest"
+        },
+        "InvestReportDocResponse": {
+            "type": "object",
+            "properties": {
+                "report": {
+                    "type": "string"
+                }
+            },
+            "title": "InvestReportDocResponse"
+        },
+        "PaymentSchedule": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "description": "Сумма выплаты"
+                },
+                "curCode": {
+                    "type": "string",
+                    "description": "Код валюты"
+                },
+                "month": {
+                    "type": "string",
+                    "description": "Месяц, в котором предстоит выплата"
+                },
+                "year": {
+                    "type": "string",
+                    "description": "Год, в котором предстоит выплата"
+                }
+            },
+            "title": "PaymentSchedule"
+        },
+        "PaymentSchedules": {
+            "type": "object",
+            "required": [
+                "asset",
+                "paymentSchedule"
+            ],
+            "properties": {
+                "asset": {
+                    "type": "string",
+                    "description": "Наименование актива"
+                },
+                "paymentSchedule": {
+                    "type": "array",
+                    "description": "Выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedule"
+                    }
+                }
+            },
+            "title": "PaymentSchedules",
+            "description": "Выплаты по продукту"
+        },
+        "PaymentSchedules1": {
+            "type": "object",
+            "required": [
+                "asset",
+                "paymentSchedule1"
+            ],
+            "properties": {
+                "asset": {
+                    "type": "string",
+                    "description": "Наименование актива"
+                },
+                "paymentSchedule1": {
+                    "type": "array",
+                    "description": "Выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedule"
+                    }
+                }
+            },
+            "title": "PaymentSchedules1",
+            "description": "Выплаты по продукту"
+        },
+        "PaymentSchedules2": {
+            "type": "object",
+            "required": [
+                "asset",
+                "paymentSchedule2"
+            ],
+            "properties": {
+                "asset": {
+                    "type": "string",
+                    "description": "Наименование актива"
+                },
+                "paymentSchedule2": {
+                    "type": "array",
+                    "description": "Выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedule"
+                    }
+                }
+            },
+            "title": "PaymentSchedules2",
+            "description": "Выплаты по продукту"
+        },
+        "PaymentSchedules3": {
+            "type": "object",
+            "required": [
+                "asset",
+                "paymentSchedule3"
+            ],
+            "properties": {
+                "asset": {
+                    "type": "string",
+                    "description": "Наименование актива"
+                },
+                "paymentSchedule3": {
+                    "type": "array",
+                    "description": "Выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedule"
+                    }
+                }
+            },
+            "title": "PaymentSchedules3",
+            "description": "Выплаты по продукту"
+        },
+        "PaymentSchedulesTable": {
+            "type": "object",
+            "required": [
+                "paymentSchedules",
+                "period"
+            ],
+            "properties": {
+                "paymentSchedules": {
+                    "type": "array",
+                    "description": "Продукты, по которым предстоят выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedules"
+                    }
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                }
+            },
+            "title": "PaymentSchedulesTable",
+            "description": "Информация по предстоящим выплатам для отображения на фронте"
+        },
+        "PaymentSchedulesTable1": {
+            "type": "object",
+            "required": [
+                "paymentSchedules1",
+                "period"
+            ],
+            "properties": {
+                "paymentSchedules1": {
+                    "type": "array",
+                    "description": "Продукты, по которым предстоят выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedules1"
+                    }
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                }
+            },
+            "title": "PaymentSchedulesTable1",
+            "description": "Информация по предстоящим выплатам"
+        },
+        "PaymentSchedulesTable2": {
+            "type": "object",
+            "required": [
+                "paymentSchedules2",
+                "period"
+            ],
+            "properties": {
+                "paymentSchedules2": {
+                    "type": "array",
+                    "description": "Продукты, по которым предстоят выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedules2"
+                    }
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                }
+            },
+            "title": "PaymentSchedulesTable2",
+            "description": "Информация по предстоящим выплатам"
+        },
+        "PaymentSchedulesTable3": {
+            "type": "object",
+            "required": [
+                "paymentSchedules3",
+                "period"
+            ],
+            "properties": {
+                "paymentSchedules3": {
+                    "type": "array",
+                    "description": "Продукты, по которым предстоят выплаты",
+                    "items": {
+                        "$ref": "#/definitions/PaymentSchedules3"
+                    }
+                },
+                "period": {
+                    "description": "Период",
+                    "$ref": "#/definitions/Period"
+                }
+            },
+            "title": "PaymentSchedulesTable3",
+            "description": "Информация по предстоящим выплатам"
+        },
+        "Period": {
+            "type": "object",
+            "required": [
+                "dateBegin",
+                "dateEnd"
+            ],
+            "properties": {
+                "dateBegin": {
+                    "type": "string",
+                    "description": "Дата начала"
+                },
+                "dateEnd": {
+                    "type": "string",
+                    "description": "Дата окончания"
+                }
+            },
+            "title": "Period"
+        },
+        "Person": {
+            "type": "object",
+            "required": [
+                "fullName"
+            ],
+            "properties": {
+                "fullName": {
+                    "type": "string",
+                    "description": "ФИО клиента"
+                }
+            },
+            "title": "Person",
+            "description": "Клиент"
+        },
+        "Portfolio": {
+            "type": "object",
+            "required": [
+                "balance",
+                "income",
+                "incomePercent",
+                "operation"
+            ],
+            "properties": {
+                "balance": {
+                    "type": "string",
+                    "description": "Баланс клиента на дату окончания"
+                },
+                "income": {
+                    "type": "number",
+                    "description": "Доход портфеля на дату окончания"
+                },
+                "incomePercent": {
+                    "type": "number",
+                    "description": "Доходность в процентах на дату окончания"
+                },
+                "operation": {
+                    "type": "string",
+                    "description": "Операции снятия/пополнения на дату окончания"
+                }
+            },
+            "title": "Portfolio"
+        },
+        "Product": {
+            "type": "object",
+            "required": [
+                "income",
+                "name",
+                "part",
+                "percent",
+                "quantity",
+                "totalAmount"
+            ],
+            "properties": {
+                "avgPrice": {
+                    "type": "number",
+                    "description": "Средняя цена покупки продукта"
+                },
+                "coupons": {
+                    "type": "number",
+                    "description": "Сумма купонных выплат за продукт"
+                },
+                "couponsPercent": {
+                    "type": "string",
+                    "description": "Процент купонных выплат"
+                },
+                "dividends": {
+                    "type": "number",
+                    "description": "Сумма выплаченных дивидендов за продукт"
+                },
+                "dividendsPercent": {
+                    "type": "string",
+                    "description": "Процент дивидентов"
+                },
+                "income": {
+                    "type": "number",
+                    "description": "Доход по продукту"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование продукта в портфеле"
+                },
+                "openDate": {
+                    "type": "string",
+                    "description": "Дата первой покупки продукта"
+                },
+                "part": {
+                    "type": "number",
+                    "description": "Процентное соотношение продукта к остальным продуктам в портфеле"
+                },
+                "percent": {
+                    "type": "string",
+                    "description": "Процент дохода"
+                },
+                "price": {
+                    "type": "number",
+                    "description": "Цена за один продукт на дату окончания"
+                },
+                "quantity": {
+                    "type": "number",
+                    "description": "Количество продукта в портфеле"
+                },
+                "totalAmount": {
+                    "type": "number",
+                    "description": "Общая сумма продукта в портфеле"
+                }
+            },
+            "title": "Product"
+        },
+        "ProductExpirationDate": {
+            "type": "object",
+            "required": [
+                "amount",
+                "expirationDate",
+                "name",
+                "percent"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number",
+                    "description": "Сумма продукта"
+                },
+                "expirationDate": {
+                    "type": "string",
+                    "description": "Дата закрытия продукта"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование продукта"
+                },
+                "percent": {
+                    "type": "number",
+                    "description": "Процент продукта в портфеле"
+                }
+            },
+            "title": "ProductExpirationDate"
+        },
+        "Share": {
+            "type": "object",
+            "required": [
+                "balance",
+                "name",
+                "percent"
+            ],
+            "properties": {
+                "balance": {
+                    "type": "string",
+                    "description": "Баланс актива"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Наименование актива"
+                },
+                "percent": {
+                    "type": "number",
+                    "description": "Процент актива к остальным"
+                }
+            },
+            "title": "Share"
+        }
+    }
+}
