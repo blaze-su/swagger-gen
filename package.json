@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "api": "openapi-generator-cli generate -i swagger/schema.json -g typescript-angular --skip-validate-spec"
+    "api": "openapi-generator-cli generate --generator-key v2.0"
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.4.18"
