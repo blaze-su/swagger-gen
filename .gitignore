@@ -4,3 +4,4 @@ typings
 dist
 yarn-error.log
 *.back
+swagger/gen

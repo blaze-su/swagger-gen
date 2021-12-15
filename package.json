@@ -3,10 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "api": "openapi-generator-cli generate --generator-key v2.0"
+    "api:pre": "node swagger/pre-gen.js",
+    "api:post": "node swagger/post-gen.js",
+    "api:gen": "docker run --rm -v ${PWD}/swagger:/app swaggerapi/swagger-codegen-cli generate -i /app/schema.json -l typescript-angular -o /app/gen",
+    "api:update": "yarn api:pre && yarn api:gen && yarn api:post"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.4.18"
+    "@openapitools/openapi-generator-cli": "^2.4.18",
+    "del": "^6.0.0",
+    "lodash": "^4.17.21"
   }
 }
